@@ -26,8 +26,3 @@ app.use((err, req, res, next) => {
 });
 
 module.exports = app;
-
-// const DB_HOST =
-//   "mongodb+srv://AlexRosly:Dfcbkbq12345@cluster0.0soq7.mongodb.net/db-contacts?retryWrites=true&w=majority";
-
-// const { DB_HOST } = process.env;
