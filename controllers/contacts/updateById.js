@@ -10,7 +10,7 @@ const updateById = async (req, res) => {
     throw new NotFound("Not found");
   }
   res.json({
-    status: "succes",
+    status: "success",
     code: 200,
     data: {
       result: result,
