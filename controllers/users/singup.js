@@ -1,5 +1,7 @@
 const { Conflict } = require("http-errors");
 const gravatar = require("gravatar");
+const nanoid = require("nanoid");
+const { sendEmail } = require("../../helpers");
 const { User } = require("../../models");
 
 const singup = async (req, res) => {
@@ -9,9 +11,22 @@ const singup = async (req, res) => {
     throw new Conflict(`Email: ${email} in use`);
   }
   const avatarURL = gravatar.url(email);
-  const newUser = new User({ email, subscription, avatarURL });
+  const verificationToken = nanoid();
+  const newUser = new User({
+    email,
+    subscription,
+    avatarURL,
+    verificationToken,
+  });
   newUser.setPassword(password);
-  newUser.save();
+  await newUser.save();
+  const mail = {
+    to: email,
+    subject: "Confirm your email",
+    html: `<a target="_blank" href="http://localhost:3000/api/users/verify/${verificationToken}">Confirm email</a>`,
+  };
+  await sendEmail(mail);
+
   res.status(201).json({
     status: "success",
     code: 201,
@@ -20,6 +35,7 @@ const singup = async (req, res) => {
         email,
         subscription,
         avatarURL,
+        verificationToken,
       },
     },
   });
